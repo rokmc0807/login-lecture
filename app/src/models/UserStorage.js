@@ -20,8 +20,11 @@ class UserStorage {
     }
 
 
-    static getUsers(...fields){
-        //const users = this.#users;
+    static #getUsers(data, isAll, fields) {
+        const users = JSON.parse(data);
+
+        if (isAll === true) return users;
+
         const newUsers = fields.reduce((newUsers, field) => {
             
             if (users.hasOwnProperty(field)) {
@@ -29,8 +32,23 @@ class UserStorage {
             }           
             return newUsers;
         }, {});
-        //console.log(newUsers);
-        return newUsers;
+        console.log("ccc");
+        console.log(JSON.parse(newUsers));
+
+        return newUsers;       
+        
+    }
+
+    static getUsers(isAll, ...fields){
+        return fs.readFile("./src/databases/users.json")
+        .then((data) => {
+            //console.log("aaa");
+            //console.log(JSON.parse(data));
+            return this.#getUsers(data, isAll,  fields);
+
+        })     // 성공
+        .catch(console.error);   //실패
+                
     }
 
     static getUserInfo(id){
@@ -43,35 +61,25 @@ class UserStorage {
 
             })     // 성공
             .catch(console.error);   //실패
-
         
-        // , (err, data) => {
-        //     if(err) throw err;
-        //     console.log(JSON.parse(data));
-        //     const users = JSON.parse(data);
-
-        //     const idx = users.id.indexOf(id);
-        //     const usersKeys = Object.keys(users);   //키 값만 리스트를 만듬 배열이됨
-        //     const userInfo = usersKeys.reduce((newUser, info) => {
-        //         newUser[info] = users[info][idx];
-        //         return newUser;
-        //     }, {});
-    
-        //     return userInfo;
-
-        // })
-
     }
 
 
-    static save(userInfo){
-        //const users = this.#users;
-        // users.id.push(userInfo.id);
-        // users.name.push(userInfo.name);
-        // users.psword.push(userInfo.psword);
-        // console.log(users);
-        // return { success: true }
+    static async save(userInfo){
 
+        const users = await this.getUsers(true);
+        if(users.id.includes(userInfo.id)){
+            throw "이미 존재하는 아이디입니다.";
+        }
+
+        users.id.push(userInfo.id);
+        users.name.push(userInfo.name);
+        users.psword.push(userInfo.psword);
+        //데이터 추가
+
+        fs.writeFile("./src/databases/users.json", JSON.stringify(users));
+        return { success: true };
+          
     }
 
 }
