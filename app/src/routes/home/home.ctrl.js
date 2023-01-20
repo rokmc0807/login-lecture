@@ -2,18 +2,22 @@
 
 const { resolveInclude } = require("ejs");
 const User = require("../../models/User");
+const loger = require("../../config/loger");
 //const UserStorage = require("../../models/UserStorage")
 
 const output = {
     home: (req, res) =>{
+        loger.info('GET / 200 "홈 화면으로 이동"');
         res.render("home/index");
     },
     
     login: (req, res) =>{
+        loger.info('GET /login 200 "로그인 화면으로 이동"');
         res.render("home/login");
     },
     
     register: (req, res) =>{
+        loger.info('GET /register 200 "회원가입 화면으로 이동"');
         res.render("home/register");
     },    
 };
@@ -23,45 +27,33 @@ const process = {
 
         const user = new User(req.body);
         const response = await user.login();
-        console.log(response);
-        
+        if (response.err)
+            loger.error(
+                `POST /login response:"scccess: ${response.success},${response.err}"`
+            );
+
+        else
+            loger.info(
+                `POST /login response:"scccess: ${response.success}, msg: ${response.msg}"`
+            );        
+
         return res.json(response);
-
-        // const id = req.body.id,
-        //     psword = req.body.psword;
-
-        // //const UserStorage = new UserStorage();    
-
-        // const users = UserStorage.getUsers("id","psword");
-
-        // const response = {};
-
-        // if (users.id.includes(id) === true){
-        //     const idx = users.id.indexOf(id);
-        //     if (users.psword[idx] === psword) {                
-        //         response.success = true;
-        //         return res.json(response);
-        //         // return res.json({
-        //         //     success:true,
-        //         // });
-        //     }
-        // }
-
-        // response.success = false;
-        // response.msg = "로그인에 실패하셨습니다.";
-        // return res.json(response);
-
-        // // return res.json({
-        // //     success:false,
-        // //     msg:"로그인에 실패하셨습니다.",
-        // // });
 
     },
     register: async (req, res) => {
         const user = new User(req.body); 
         const response = await user.register();
-        console.log(response);
-        
+        if (response.err)
+            loger.error(
+                `POST /register response:"scccess: ${response.success}, ${response.err}"`
+            );
+
+        else
+            loger.info(
+                `POST /register response:"scccess: ${response.success}, msg: ${response.msg}"`
+            );   
+
+                
         return res.json(response);
 
     },    

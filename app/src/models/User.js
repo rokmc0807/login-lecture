@@ -24,7 +24,7 @@ class User {
             return { success: false, msg: "준재하지 않는 아이디입니다." }
 
         } catch (err){
-            return { success: false, msg: err };
+            return { success: false, err };
         }
         
     }
@@ -39,8 +39,7 @@ class User {
 
 
         }catch(err){
-            const errmsg = { success: false, msg: err };
-            console.error(err);
+            const errmsg = { success: false, err };
             return errmsg;
         }
         
