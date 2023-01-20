@@ -27,38 +27,48 @@ const process = {
 
         const user = new User(req.body);
         const response = await user.login();
-        if (response.err)
-            loger.error(
-                `POST /login response:"scccess: ${response.success},${response.err}"`
-            );
 
-        else
-            loger.info(
-                `POST /login response:"scccess: ${response.success}, msg: ${response.msg}"`
-            );        
-
-        return res.json(response);
+        const url = {
+            method: "POST",
+            path: "/login",
+            status: response.err ? 400 : 200,
+        }
+        log(response, url);
+        return res.status(url.status).json(response);
 
     },
+    
     register: async (req, res) => {
         const user = new User(req.body); 
         const response = await user.register();
-        if (response.err)
-            loger.error(
-                `POST /register response:"scccess: ${response.success}, ${response.err}"`
-            );
-
-        else
-            loger.info(
-                `POST /register response:"scccess: ${response.success}, msg: ${response.msg}"`
-            );   
-
+        const url = {
+            method: "POST",
+            path: "/register",
+            status: response.err ? 400 : 200,
+        }
+        log(response, url);
                 
-        return res.json(response);
+        return res.status(url.status).json(response);
 
     },    
 
 };
+
+const log = (response, url) => {
+
+    if (response.err)
+    loger.error(
+        `${url.method} /${url.path} response: ${response.success} ${response.err}`
+    );
+
+else
+    loger.info(
+        `${url.method} /${url.path} response: ${response.success} ${
+            response.msg || ""
+        }`
+    );        
+
+}
 
 
 module.exports = {

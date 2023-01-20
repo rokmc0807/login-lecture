@@ -54,7 +54,7 @@ class UserStorage {
     static getUserInfo(id){
         return new Promise ((resolve, reject) => {
 
-            const query = "select * from users1 where id = ?";
+            const query = "select * from users where id = ?";
 
             db.query(query, [id], (err, data) => {
                 if (err) reject(`${err}`);
@@ -70,7 +70,7 @@ class UserStorage {
 
         return new Promise ((resolve, reject) => {
 
-            const query = "insert into users1(id,name,psword) values(?, ?, ?) ";
+            const query = "insert into users(id,name,psword) values(?, ?, ?) ";
 
             db.query(
                 query, 
